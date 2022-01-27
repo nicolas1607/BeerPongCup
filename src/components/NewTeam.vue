@@ -1,10 +1,10 @@
 <template>
-  <div id="team">
+  <div class="team animate__animated animate__fadeInUp">
     <div :id="'team' + id" class="team-class">
-      <a :id="'remove-team' + id" class="remove-team" @click="removeTeam()"
-        >X</a
-      >
-      <div class="team-label">
+      <a :id="'remove-team' + id" class="remove-team" @click="removeTeam()">
+        <font-awesome-icon :icon="['fa', 'times']" class="font-awesome-icon" />
+      </a>
+      <div class="team-label team-name">
         <input
           :id="'team-input' + id"
           class="team-input"
@@ -13,8 +13,12 @@
           :placeholder="'Équipe n°' + id"
           maxlength="24"
         />
+        <font-awesome-icon
+          :icon="['fa', 'pen']"
+          class="font-awesome-icon team-name-edit"
+        />
       </div>
-      <hr />
+      <section class="curved"></section>
       <div :id="'players' + id" class="team-label">
         <component
           v-for="(component, index) in players"
@@ -45,6 +49,9 @@ export default {
       players: [],
     };
   },
+  mounted() {
+    this.players.push(NewPlayer);
+  },
   methods: {
     addPlayer() {
       this.players.push(NewPlayer);
@@ -52,7 +59,12 @@ export default {
     removeTeam() {
       this.$store.commit("removeNbTeam");
       this.$store.commit("reduceTeamId");
-      this.$el.remove();
+      this.$el.className = "animate__animated animate__fadeOutRight";
+      this.$el.style.display = "none";
+      this.$el.style.display = "block";
+      setTimeout(() => {
+        this.$el.remove();
+      }, 800);
       const teams = document.querySelectorAll(".team-class");
       for (let i = 0; i < teams.length; i++) {
         teams[i].id = "team" + (i + 1);
@@ -70,28 +82,46 @@ export default {
 </script>
 
 <style scoped>
+.curved {
+  position: absolute;
+  top: 0rem;
+  left: 0;
+  right: 0;
+  background: var(--secondary-color);
+  height: 4rem;
+  border-radius: 0.5rem;
+  border-bottom-left-radius: 50% 11%;
+  border-bottom-right-radius: 50% 11%;
+}
+
+.team-name {
+  position: relative;
+  margin-bottom: 1rem !important;
+}
+
+.team-name-edit {
+  position: absolute;
+  transform: scale(0.4);
+  top: 0.6rem;
+  right: 2rem;
+  color: black;
+}
+
 .team-class {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 3rem 2rem 2rem 2rem;
+  padding: 1.5rem;
+  padding-top: 0.5rem;
   border: transparent;
   background-color: white;
-  box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 6px 6px 6px 2px rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
-  margin-bottom: 2rem;
   height: auto;
 }
 
-@media screen and (min-width: 36em) {
-  .team-class {
-    margin-bottom: 0;
-  }
-}
-
 .team-class:hover {
-  transform: translateY(-0.3rem);
   box-shadow: 6px 6px 6px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -103,6 +133,7 @@ export default {
   color: lightgray;
   font-size: 1rem;
   font-weight: bold;
+  z-index: 2;
 }
 
 .remove-team:hover {
@@ -112,33 +143,31 @@ export default {
 
 .team-label {
   margin: auto;
+  z-index: 2;
 }
 
 .team-input {
-  width: 94%;
+  width: 80%;
   font-weight: bold;
   font-size: 1.2rem;
   text-align: center;
-  border: transparent;
+  border: transparent !important;
+  background: var(--secondary-color);
+  color: #333;
 }
 
-@media screen and (min-width: 36em) {
-  .team-input {
-    font-size: 1.4rem;
-  }
+.team-input::placeholder {
+  color: #333;
 }
 
 .team-button {
   margin-top: 1rem;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem;
+  font-size: 0.8rem;
   margin: auto;
   width: 70%;
   cursor: pointer;
-}
-
-.team-button:hover {
-  background-color: #ef476f;
+  background-color: #333;
   color: white;
-  opacity: 0.8;
 }
 </style>

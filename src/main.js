@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp } from 'vue/dist/vue.esm-bundler.js'
 import { createStore } from 'vuex'
 import App from './App.vue'
 import router from './router'
@@ -6,16 +6,16 @@ import router from './router'
 // Font awesome
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSortDown, faTimes, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-library.add(faSortDown, faTimes, faChevronRight);
+import { faSortDown, faTimes, faBars, faEllipsisH, faInfoCircle, faHome, faSlidersH, faTrophy, faDice, faRandom, faEdit, faChevronLeft, faPlay, faPlus, faPen, faCogs } from "@fortawesome/free-solid-svg-icons";
+library.add(faSortDown, faTimes, faBars, faEllipsisH, faInfoCircle, faHome, faSlidersH, faTrophy, faDice, faRandom, faEdit, faChevronLeft, faPlay, faPlus, faPen, faCogs);
 
 // VueX 4.0
 const store = createStore({
     state() {
         return {
             // INTEGER //
-            teamId: 3, // ajout des équipes
-            nbTeam: 2, // nb d'équipes qui participent
+            teamId: 2, // ajout des équipes
+            nbTeam: 1, // nb d'équipes qui participent
             nbTours: 0, // nb de matchs déjà réalisés
             totalMatch: 0, // nb de matchs à réaliser
 
@@ -32,6 +32,17 @@ const store = createStore({
             team: [], // la liste des équipes, des joueurs et des scores
             resFinal: [], // la liste des équipes pour le tableau final des scores
             listMatch: [],
+
+            // SETTINGS //
+            win: 'D',
+            equal: '1',
+            loose: '0',
+            randomTeam: false,
+
+            // OPTIONS ADVANCED //
+            langage: 'french',
+            darkMode: false
+
         }
     },
     getters: {
@@ -75,9 +86,29 @@ const store = createStore({
         getListMatch: state => {
             return state.listMatch;
         },
+        // SETTINGS
+        getWin: state => {
+            return state.win;
+        },
+        getEqual: state => {
+            return state.equal;
+        },
+        getLoose: state => {
+            return state.loose;
+        },
+        getRandomTeam: state => {
+            return state.randomTeam;
+        },
+        // OPTIONS ADVANCED
+        getDarkMode: state => {
+            return state.darkMode;
+        }
     },
     mutations: {
         // teamId <integer>
+        setTeamId(state, val) {
+            state.teamId = val;
+        },
         incrementTeamId(state) {
             state.teamId++;
         },
@@ -85,6 +116,9 @@ const store = createStore({
             state.teamId--;
         },
         // nbTeam <integer>
+        setNbTeam(state, val) {
+            state.nbTeam = val;
+        },
         addNbTeam(state) {
             state.nbTeam++;
         },
@@ -96,8 +130,19 @@ const store = createStore({
             state.totalMatch = bool;
         },
         // nbTours <integer>
+        setNbTours(state, val) {
+            state.nbTours = val;
+        },
         addNbTours(state) {
             state.nbTours++;
+        },
+        // play1 <string>
+        setPlay1(state, val) {
+            state.play1 = val;
+        },
+        // play2 <string>
+        setPlay2(state, val) {
+            state.play2 = val;
         },
         // team <array>
         setTeam(state, array) {
@@ -111,9 +156,34 @@ const store = createStore({
         setListMatch(state, array) {
             state.listMatch = array;
         },
+        // started <boolean>
+        setStarted(state, val) {
+            state.started = val;
+        },
+        // poolFinish <boolean>
+        setPoolFinish(state, val) {
+            state.poolFinish = val;
+        },
         // gameFinish <boolean>
         setGameFinish(state, bool) {
             state.gameFinish = bool;
+        },
+        // SETTINGS
+        setWin(state, string) {
+            state.win = string;
+        },
+        setEqual(state, string) {
+            state.equal = string;
+        },
+        setLoose(state, string) {
+            state.loose = string;
+        },
+        setRandomTeam(state, bool) {
+            state.randomTeam = bool;
+        },
+        // OPTIONS ADVANCED
+        setDarkMode(state, bool) {
+            state.darkMode = bool;
         }
     }
 })

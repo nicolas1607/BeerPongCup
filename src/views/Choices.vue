@@ -1,24 +1,60 @@
 <template>
   <div>
-    <Header linkText="LET'S GO" href="/game" />
+    <div class="go animate__animated animate__bounceIn animate__delay-1s">
+      <router-link to="/game">
+        <font-awesome-icon :icon="['fa', 'play']" class="font-awesome-icon" />
+      </router-link>
+    </div>
+    <div class="btn-toggle animate__animated">
+      <font-awesome-icon
+        :icon="['fa', 'ellipsis-h']"
+        class="font-awesome-icon"
+        @click="displayBtn()"
+      />
+    </div>
+
+    <div id="menu">
+      <div class="nav-title">
+        <font-awesome-icon
+          :icon="['fa', 'bars']"
+          style="margin-left: 0; margin-right: 1rem"
+          class="font-awesome-icon"
+          @click="this.hiddenMenu()"
+        />
+        <img class="nav-img" :src="require(`../assets/logo.png`)" />
+      </div>
+      <ul class="menu-list">
+        <li class="menu-item">
+          <a href="" class="menu-link">Tableau des scores</a>
+        </li>
+        <li class="menu-item">
+          <a href="" class="menu-link">Changer les équipes</a>
+        </li>
+      </ul>
+    </div>
 
     <div class="container">
       <div id="param-header">
         <div id="mode-param">
           <div id="mode">
-            <label for="mode">Mode de jeu</label>
-            <select name="mode">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <label for="mode">Mode de jeu</label>
+              <font-awesome-icon
+                :icon="['fa', 'ellipsis-h']"
+                class="font-awesome-icon"
+                @click="displayParam()"
+              />
+            </div>
+            <select id="mode-select" class="form-select" name="mode">
               <option value="tournament">Tournoi</option>
               <option value="elimination">Élimination</option>
             </select>
-          </div>
-          <div id="param">
-            <label for="param">Paramètres</label>
-            <font-awesome-icon
-              :icon="['fa', 'sort-down']"
-              class="font-awesome-icon"
-              @click="displayParam()"
-            />
           </div>
         </div>
 
@@ -31,6 +67,10 @@
         </div>
       </div>
 
+      <section>
+        <div class="skewed-param"></div>
+      </section>
+
       <div id="teams">
         <component
           v-for="(component, index) in teams"
@@ -38,22 +78,30 @@
           :is="component"
         />
         <div id="add-team">
-          <a @click="addTeam()" class="add-team-button">
-            <img
-              class="add-team-img"
-              :src="require(`../assets/add_team.svg`)"
+          <a
+            @click="addTeam()"
+            class="
+              add-team-button
+              animate__animated animate__bounceIn animate__delay-2s
+            "
+          >
+            <font-awesome-icon
+              :icon="['fa', 'plus']"
+              class="font-awesome-icon"
             />
           </a>
         </div>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
 import NewTeam from "@/components/NewTeam.vue";
 import ParamTournament from "@/components/ParamTournament.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Home",
@@ -61,6 +109,7 @@ export default {
     Header,
     NewTeam,
     ParamTournament,
+    Footer,
   },
   data() {
     return {
@@ -70,7 +119,19 @@ export default {
   },
   created() {
     this.teams.push(<NewTeam id="1" />);
-    this.teams.push(<NewTeam id="2" />);
+    // this.teams.push(<NewTeam id="2" />);
+  },
+  mounted() {
+    const mode = document.querySelector("#mode-select");
+    mode.addEventListener("change", () => {
+      if (mode.value == "elimination") {
+        document.querySelector(".check-elim-series input").disabled = true;
+      } else {
+        document
+          .querySelector(".check-elim-series input")
+          .removeAttribute("disabled");
+      }
+    });
   },
   beforeUnmount() {
     this.init();
@@ -87,6 +148,12 @@ export default {
     localStorage.setItem("listMatch", parsed);
   },
   methods: {
+    hiddenMenu() {
+      const menu = document.querySelector("#menu");
+      menu.className = "animate__animated animate__fadeOutLeft";
+      menu.style.display = "none";
+      menu.style.display = "block";
+    },
     addTeam: function () {
       this.teams.push(
         <NewTeam id={this.$store.getters.getTeamId} remove={this.removeTeam} />
@@ -96,13 +163,37 @@ export default {
     },
     displayParam: function () {
       const params = document.querySelector("#params");
-      if (
-        params.style.visibility == "" ||
-        params.style.visibility == "hidden"
-      ) {
-        params.style.visibility = "visible";
+      if (params.style.display == "" || params.style.display == "none") {
+        params.style.display = "block";
+        document
+          .querySelector(".skewed-param")
+          .setAttribute("style", "height: 23em");
+        document
+          .querySelector("#teams")
+          .setAttribute("style", "margin-top: 3rem;");
       } else {
-        params.style.visibility = "hidden";
+        params.style.display = "none";
+        document
+          .querySelector(".skewed-param")
+          .setAttribute("style", "height: 5em");
+        document
+          .querySelector("#teams")
+          .setAttribute("style", "margin-top: 2rem;");
+      }
+    },
+    displayBtn() {
+      const toggle = document.querySelector(".btn-toggle");
+      const go = document.querySelector(".go");
+      const add = document.querySelector(".add-team-button");
+      console.log(go.style.display);
+      if (go.style.display == "flex" || go.style.display == "") {
+        go.style.display = "none";
+        add.style.display = "none";
+        toggle.setAttribute("style", "transform: rotate(-270deg)");
+      } else {
+        go.style.display = "flex";
+        add.style.display = "flex";
+        toggle.setAttribute("style", "transform: rotate(0)");
       }
     },
     // initialise la partie avec toutes les équipes
@@ -114,7 +205,6 @@ export default {
           name,
           value,
         }));
-        console.log(res);
         this.$store.commit("setTeam", res);
         this.$store.commit("setResFinal", res);
       }
@@ -168,44 +258,130 @@ export default {
 </script>
 
 <style scoped>
+.add-team-button {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 14rem;
+  right: 1.5rem;
+  border-radius: 10rem;
+  box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.2);
+  width: 3rem;
+  height: 3rem;
+  box-shadow: 3px 3px 6px 5px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-color);
+  z-index: 10;
+}
+
+.go {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 10rem;
+  right: 1.5rem;
+  font-size: 1.2rem;
+  box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-color);
+  border-radius: 10rem;
+  height: 3rem;
+  width: 3rem;
+  z-index: 10;
+  transform: scale(1.1);
+}
+
+.btn-toggle {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 6rem;
+  color: white;
+  right: 1.5rem;
+  font-size: 1.2rem;
+  box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-color);
+  border-radius: 10rem;
+  height: 3rem;
+  width: 3rem;
+  z-index: 10;
+  transform: scale(1.1);
+  transform: rotate(0);
+  transition: transform 2s;
+}
+
+.go a {
+  margin-left: 0.2rem;
+}
+
+.skewed-param {
+  position: absolute;
+  top: 3em;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 5em;
+  background-color: var(--primary-color);
+  z-index: -1;
+  transform: skewY(-1deg);
+  transform-origin: top left;
+  opacity: 0.4;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+}
+
 #param-header {
-  margin-bottom: -2rem;
+  position: relative;
+}
+
+#params {
+  display: none;
+  color: white;
 }
 
 #mode-param {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   color: white;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: 4rem;
 }
 
 #mode,
 #param {
   display: flex;
   align-content: center;
-  margin-left: 1rem;
-  margin-right: 1rem;
 }
 
 #mode select,
 #param input {
   margin-top: 0.2rem;
-  margin-left: 2rem;
   height: 2.2rem;
+  width: 100%;
 }
 
-#params {
-  color: white;
-  visibility: hidden;
+#mode {
+  display: flex;
+  flex-direction: column;
+}
+
+#mode select {
+  border: transparent !important;
+  border-radius: 0.2rem;
+  margin-top: 1rem;
+}
+
+#param {
+  margin-top: 2rem;
+  position: relative;
 }
 
 #teams {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 2rem;
-  margin-top: 4rem;
-  margin-bottom: 8rem;
+  margin-top: 2rem;
 }
 
 #add-team {
@@ -215,15 +391,5 @@ export default {
   width: 100%;
   height: 100%;
   min-height: 270px;
-}
-
-.add-team-img {
-  width: 90px;
-  height: 90px;
-  margin-top: -2rem;
-  animation-name: bounce;
-  animation-duration: 800ms;
-  animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-  animation-iteration-count: infinite;
 }
 </style>

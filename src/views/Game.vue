@@ -1,13 +1,39 @@
 @<template>
   <div>
-    <Header :linkText="this.nbMatch" href="" />
+    <Header title="Phase de Pool" :linkText="this.nbMatch" href="" />
+
+    <div id="menu">
+      <div class="nav-title">
+        <font-awesome-icon
+          :icon="['fa', 'bars']"
+          style="margin-left: 0; margin-right: 1rem"
+          class="font-awesome-icon"
+          @click="this.hiddenMenu()"
+        />
+        <img class="nav-img" :src="require(`../assets/logo.png`)" />
+      </div>
+      <ul class="menu-list">
+        <li class="menu-item">
+          <router-link to="/" class="menu-link">Nouvelle partie</router-link>
+        </li>
+        <li class="menu-item">
+          <a href="" class="menu-link">Tableau des scores</a>
+        </li>
+        <li class="menu-item">
+          <a href="" class="menu-link">Changer les équipes</a>
+        </li>
+      </ul>
+    </div>
 
     <ModalScore />
 
     <div id="modal-edit" class="overlap" hidden>
       <div id="modal">
         <a id="close-modal" @click="closeEditModal()">X</a>
-        <h2 id="match-edit-title">Séléctionner votre match</h2>
+        <h2 id="match-edit-title">
+          Séléctionner <br />
+          votre match
+        </h2>
         <div id="match-edit">
           <div v-for="match in this.listMatch" :key="match">
             <a
@@ -19,10 +45,6 @@
               class="match-edit"
             >
               <p>{{ getTeamName(match[0]) }}</p>
-              <img
-                :src="require(`../assets/vs_white.svg`)"
-                class="match-edit-vs"
-              />
               <p>{{ getTeamName(match[1]) }}</p>
             </a>
           </div>
@@ -31,7 +53,6 @@
     </div>
 
     <div class="container">
-      <h1 class="score-title">Phase de Pool</h1>
       <div id="table-team">
         <div class="div-table">
           <table class="table table-striped table-hover sortable">
@@ -47,61 +68,95 @@
               <tr id="1" class="tr-elem">
                 <td>{{ team.name }}</td>
                 <td>{{ team.value[0] }}</td>
-                <td v-if="team.value[1]">
-                  <span v-for="player in team.value[1]" :key="player">
-                    {{ player }} /
+                <td class="table-players" v-if="team.value[1].length != 0">
+                  <span v-for="(player, index) in team.value[1]" :key="player">
+                    <p v-if="index < team.value[1].length - 1">{{ player }},</p>
+                    <p v-else>{{ player }}</p>
                   </span>
                 </td>
-                <td v-else></td>
-                <td id="score-sortable">{{ team.value[2] }}</td>
+                <td v-else>/</td>
+                {{
+                  team.value[2]
+                }}
+                <td v-if="team.value[2] != null" id="score-sortable"></td>
+                <td v-else id="score-sortable">0</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div id="div-versus">
+          <div id="div-versus-btn">
+            <a @click="showEditModal()">
+              <img
+                id="edit-match"
+                class="animate__animated animate__zoomIn animate__delay-2s"
+                :src="require(`../assets/editer.png`)"
+              />
+            </a>
+            <a @click="randomMatch()">
+              <font-awesome-icon
+                :icon="['fa', 'random']"
+                id="switch-match"
+                class="
+                  font-awesome-icon
+                  animate__animated animate__zoomIn animate__delay-2s
+                "
+              />
+            </a>
+            <a>
+              <font-awesome-icon
+                :icon="['fa', 'dice']"
+                id="game-match"
+                class="
+                  font-awesome-icon
+                  animate__animated animate__zoomIn animate__delay-2s
+                "
+              />
+            </a>
+          </div>
+
           <div id="div-players">
-            <p id="player1">{{ play1 }}</p>
-            <img id="team-versus" :src="require(`../assets/vs.svg`)" />
-            <p id="player2">{{ play2 }}</p>
-          </div>
-          <div id="div-img-versus">
+            <p id="player1" class="animate__animated animate__bounceIn">
+              {{ play1 }}
+            </p>
             <img
-              id="switch-button"
-              :src="require(`../assets/switch.svg`)"
-              @click="randomMatch()"
+              id="team-versus"
+              class="animate__animated animate__jackInTheBox animate__delay-1s"
+              :src="require(`../assets/vs.svg`)"
             />
-            <img
-              id="edit-button"
-              :src="require(`../assets/edit.svg`)"
-              @click="showEditModal()"
-            />
-            <button
-              v-if="this.nbTours + 1 == 1"
-              class="button-img"
-              @click="showScoreModal()"
-            >
-              1er match
-            </button>
-            <button v-else class="button-img" @click="showScoreModal()">
-              {{ this.nbTours + 1 }}ème match
-            </button>
+            <p id="player2" class="animate__animated animate__bounceIn">
+              {{ play2 }}
+            </p>
           </div>
+          <button
+            v-if="this.nbTours + 1 == 1"
+            class="button-img"
+            @click="showScoreModal()"
+          >
+            1er match
+          </button>
+          <button v-else class="button-img" @click="showScoreModal()">
+            Jouer le match
+          </button>
         </div>
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
 import ModalScore from "@/components/ModalScore.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Home",
   components: {
     Header,
     ModalScore,
+    Footer,
   },
   data() {
     return {
@@ -129,6 +184,9 @@ export default {
     });
   },
   mounted() {
+    localStorage.win = this.$store.getters.getWin;
+    localStorage.equal = this.$store.getters.getEqual;
+    localStorage.loose = this.$store.getters.getLoose;
     // INTEGER //
     if (localStorage.nbTours) {
       this.nbTours = localStorage.nbTours;
@@ -176,6 +234,12 @@ export default {
     this.sortedData();
   },
   methods: {
+    hiddenMenu() {
+      const menu = document.querySelector("#menu");
+      menu.className = "animate__animated animate__fadeOutLeft";
+      menu.style.display = "none";
+      menu.style.display = "block";
+    },
     getTeamName(id) {
       let res;
       for (let team of this.teams) {
@@ -252,43 +316,47 @@ export default {
 
 <style scoped>
 #div-versus {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   text-align: center;
   color: white;
-  opacity: 0.8;
+  margin-top: 6rem;
+  margin-bottom: 4rem;
+}
+
+#div-versus-btn {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 10%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+}
+
+#edit-match,
+#switch-match,
+#game-match {
+  width: 100%;
+}
+
+#edit-match {
+  --animate-duration: 1s;
+}
+
+#switch-match {
+  --animate-duration: 1.5s;
+}
+
+#game-match {
+  --animate-duration: 2s;
 }
 
 #team-versus {
   margin: auto;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  width: 20%;
-}
-
-#div-img-versus {
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 3fr;
-  gap: 2rem;
-  margin-top: 2rem;
-  margin-bottom: 8rem;
-}
-
-#switch-button,
-#edit-button {
-  z-index: 10000;
-  background-color: #ef476f;
-  margin: auto;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 10rem;
-  cursor: pointer;
-}
-
-#switch-button:hover,
-#edit-button:hover {
-  transform: scale(1.2);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 30%;
 }
 
 .div-table {
@@ -299,29 +367,28 @@ export default {
 #player1,
 #player2 {
   word-break: break-word;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#player1 {
+  margin-left: -4rem;
+  --animate-duration: 2s;
+}
+#player2 {
+  position: relative;
+  margin-left: 4rem;
+  right: 0;
+  --animate-duration: 3s;
 }
 
 .button-img {
-  padding: 0.8rem 1.5rem;
+  padding: 0.8rem 1rem;
   font-size: 1rem;
-}
-
-@media screen and (min-width: 36em) {
-  #player1 {
-    margin-left: -10rem;
-  }
-  #player2 {
-    margin-left: 10rem;
-  }
-  #div-img-versus {
-    margin-bottom: 0;
-  }
-  #div-versus {
-    position: absolute;
-    top: 25%;
-    left: 65%;
-    margin-left: 0;
-  }
+  width: 80%;
+  margin: auto;
+  margin-top: 2rem;
+  animation: unset;
 }
 </style>

@@ -1,14 +1,33 @@
 <template>
   <div>
-    <Header />
+    <Header title="Qualification" />
+
+    <div id="menu">
+      <div class="nav-title">
+        <font-awesome-icon
+          :icon="['fa', 'bars']"
+          style="margin-left: 0; margin-right: 1rem"
+          class="font-awesome-icon"
+          @click="this.hiddenMenu()"
+        />
+        <img class="nav-img" :src="require(`../assets/logo.png`)" />
+      </div>
+      <ul class="menu-list">
+        <li class="menu-item">
+          <router-link to="/" class="menu-link">Nouvelle partie</router-link>
+        </li>
+        <li class="menu-item">
+          <a href="" class="menu-link">Tableau des scores</a>
+        </li>
+        <li class="menu-item">
+          <a href="" class="menu-link">Changer les équipes</a>
+        </li>
+      </ul>
+    </div>
 
     <div class="container">
       <div id="div-title">
-        <h1 class="score-title">Lancer les séries d'éliminations</h1>
-        <font-awesome-icon
-          :icon="['fa', 'chevron-right']"
-          class="font-awesome-icon"
-        />
+        <h1 class="score-title">Tableau des scores</h1>
       </div>
       <div id="table-qualif">
         <div class="div-table">
@@ -41,16 +60,20 @@
       </div>
     </div>
   </div>
+
+  <Footer />
 </template>
 
 <script>
 // @ is an alias to /src
 import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Home",
   components: {
     Header,
+    Footer,
   },
   data() {
     return {
@@ -78,6 +101,12 @@ export default {
         return a["value"][2] > b["value"][2] ? -1 : 1;
       });
     },
+    hiddenMenu() {
+      const menu = document.querySelector("#menu");
+      menu.className = "animate__animated animate__fadeOutLeft";
+      menu.style.display = "none";
+      menu.style.display = "block";
+    },
   },
 };
 </script>
@@ -91,6 +120,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 8rem;
   margin-bottom: 4rem;
 }
 
