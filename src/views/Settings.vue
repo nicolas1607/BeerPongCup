@@ -3,7 +3,7 @@
     <Header title="Paramètres" />
 
     <div class="container">
-      <div class="settings">
+      <div class="settings animate__animated animate__fadeInLeft">
         <h2>Options avancées</h2>
         <div class="form-check form-switch setting">
           <label class="form-check-label" for="dark-mode"

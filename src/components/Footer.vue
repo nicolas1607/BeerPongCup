@@ -1,20 +1,34 @@
 <template>
+  <!-- ALERT DANGER -->
+  <AlertModal title="Êtes vous sûr de vouloir quitter la partie en cours ?" />
+
   <div class="footer-menu">
-    <router-link class="footer-active" to="/">
-      <font-awesome-icon :icon="['fa', 'home']" class="font-awesome-icon" />
-    </router-link>
-    <a>
+    <a class="footer-trophy">
       <font-awesome-icon :icon="['fa', 'trophy']" class="font-awesome-icon" />
     </a>
-    <router-link to="/settings">
+    <a class="footer footer-home" @click="openModalAlert()">
+      <font-awesome-icon :icon="['fa', 'home']" class="font-awesome-icon" />
+    </a>
+    <router-link class="footer-setting" to="/settings">
       <font-awesome-icon :icon="['fa', 'cogs']" class="font-awesome-icon" />
     </router-link>
   </div>
 </template>
 
 <script>
+import AlertModal from "@/components/AlertModal.vue";
+
 export default {
   name: "Footer",
+  components: {
+    AlertModal,
+  },
+  methods: {
+    openModalAlert() {
+      const modal = document.querySelector("#modal-danger");
+      modal.hidden = false;
+    },
+  },
 };
 </script>
 
@@ -35,10 +49,18 @@ export default {
 
 .footer-menu a {
   margin: auto;
-  padding: 1rem 2.5rem;
+  padding: 1rem 1rem;
 }
 
 .footer-menu a:hover {
+  transform: scale(1.2);
+}
+
+.footer-home {
+  transform: scale(1.2);
+}
+
+.footer-settings {
   transform: scale(1.2);
 }
 </style>

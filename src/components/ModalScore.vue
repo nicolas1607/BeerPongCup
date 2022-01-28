@@ -6,7 +6,7 @@
   >
     <div
       id="modal"
-      class="animate__animated animate__zoomIn animate__delay-0.5s"
+      class="modal-score animate__animated animate__zoomIn animate__delay-0.5s"
     >
       <a id="close-modal" @click="this.$parent.closeScoreModal()">
         <font-awesome-icon :icon="['fa', 'times']" class="font-awesome-icon" />
@@ -97,9 +97,6 @@
 <script>
 export default {
   name: "ModalScore",
-  data() {
-    return {};
-  },
   beforeUnmount() {
     this.setScore();
   },
@@ -187,16 +184,6 @@ export default {
             value: [team["value"][0], team["value"][1], team["value"][2]],
           });
         }
-        // Reload new match
-        const player1 = document.querySelector("#player1");
-        const player2 = document.querySelector("#player2");
-        const teamVersus = document.querySelector("#team-versus");
-        player1.style.display = "none";
-        player1.style.display = "block";
-        player2.style.display = "none";
-        player2.style.display = "block";
-        teamVersus.style.display = "none";
-        teamVersus.style.display = "block";
       }
       parsed = JSON.stringify(result);
       localStorage.setItem("teams", parsed);
@@ -231,16 +218,22 @@ export default {
 
 #modal {
   overflow: scroll;
-  position: relative;
   background-color: var(--primary-color);
   position: absolute;
-  width: 100%;
-  top: 25%;
-  bottom: 25%;
   left: 8%;
   width: 84%;
   border-radius: 0.2rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-edit {
+  top: 10%;
+  bottom: 10%;
+}
+
+.modal-score {
+  top: 25%;
+  bottom: 25%;
 }
 
 #close-modal {

@@ -5,13 +5,20 @@
         <font-awesome-icon :icon="['fa', 'play']" class="font-awesome-icon" />
       </router-link>
     </div>
-    <div class="btn-toggle animate__animated">
-      <font-awesome-icon
-        :icon="['fa', 'ellipsis-h']"
-        class="font-awesome-icon"
-        @click="displayBtn()"
-      />
-    </div>
+    <a
+      @click="addTeam()"
+      class="
+        add-team-button
+        animate__animated animate__bounceIn animate__delay-2s
+      "
+    >
+      <font-awesome-icon :icon="['fa', 'plus']" class="font-awesome-icon" />
+    </a>
+    <font-awesome-icon
+      :icon="['fa', 'ellipsis-h']"
+      class="btn-toggle font-awesome-icon"
+      @click="displayBtn()"
+    />
 
     <div id="menu">
       <div class="nav-title">
@@ -77,20 +84,6 @@
           :key="index"
           :is="component"
         />
-        <div id="add-team">
-          <a
-            @click="addTeam()"
-            class="
-              add-team-button
-              animate__animated animate__bounceIn animate__delay-2s
-            "
-          >
-            <font-awesome-icon
-              :icon="['fa', 'plus']"
-              class="font-awesome-icon"
-            />
-          </a>
-        </div>
       </div>
     </div>
   </div>
@@ -187,13 +180,21 @@ export default {
       const add = document.querySelector(".add-team-button");
       console.log(go.style.display);
       if (go.style.display == "flex" || go.style.display == "") {
-        go.style.display = "none";
-        add.style.display = "none";
+        go.className =
+          "go animate__animated animate__bounceOut animate__delay-1s";
+        add.className = "add-team-button animate__animated animate__bounceOut";
         toggle.setAttribute("style", "transform: rotate(-270deg)");
+        setTimeout(() => {
+          go.style.display = "none";
+          add.style.display = "none";
+        }, 3000);
       } else {
+        go.className = "go animate__animated animate__bounceIn";
+        add.className =
+          "add-team-button animate__animated animate__bounceIn animate__delay-1s";
+        toggle.setAttribute("style", "transform: rotate(0)");
         go.style.display = "flex";
         add.style.display = "flex";
-        toggle.setAttribute("style", "transform: rotate(0)");
       }
     },
     // initialise la partie avec toutes les équipes
@@ -288,7 +289,6 @@ export default {
   height: 3rem;
   width: 3rem;
   z-index: 10;
-  transform: scale(1.1);
 }
 
 .btn-toggle {
@@ -305,6 +305,7 @@ export default {
   border-radius: 10rem;
   height: 3rem;
   width: 3rem;
+  padding: 0.8rem;
   z-index: 10;
   transform: scale(1.1);
   transform: rotate(0);
@@ -382,14 +383,6 @@ export default {
   grid-template-columns: 1fr;
   gap: 2rem;
   margin-top: 2rem;
-}
-
-#add-team {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  min-height: 270px;
+  padding-bottom: 10rem;
 }
 </style>

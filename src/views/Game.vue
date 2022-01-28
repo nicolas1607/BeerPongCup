@@ -28,7 +28,7 @@
     <ModalScore />
 
     <div id="modal-edit" class="overlap" hidden>
-      <div id="modal">
+      <div id="modal" class="modal-edit">
         <a id="close-modal" @click="closeEditModal()">X</a>
         <h2 id="match-edit-title">
           Séléctionner <br />
@@ -75,11 +75,9 @@
                   </span>
                 </td>
                 <td v-else>/</td>
-                {{
-                  team.value[2]
-                }}
-                <td v-if="team.value[2] != null" id="score-sortable"></td>
-                <td v-else id="score-sortable">0</td>
+                <td id="score-sortable">
+                  {{ team.value[2] }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -129,14 +127,7 @@
               {{ play2 }}
             </p>
           </div>
-          <button
-            v-if="this.nbTours + 1 == 1"
-            class="button-img"
-            @click="showScoreModal()"
-          >
-            1er match
-          </button>
-          <button v-else class="button-img" @click="showScoreModal()">
+          <button class="button-img" @click="showScoreModal()">
             Jouer le match
           </button>
         </div>
