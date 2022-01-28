@@ -44,15 +44,16 @@
               <tr id="1" class="tr-elem">
                 <td>{{ team.name }}</td>
                 <td>{{ team.value[0] }}</td>
-                <td v-if="team.value[1]">
+                <td v-if="team.value[1].length != 0">
                   <span v-for="player in team.value[1]" :key="player">
                     {{ player }} /
                   </span>
                 </td>
-                <td v-else></td>
-                <td id="score-sortable">
+                <td v-else>/</td>
+                <td v-if="team.value[2]" id="score-sortable">
                   {{ team.value[2] }}
                 </td>
+                <td v-else id="score-sortable">0</td>
               </tr>
             </tbody>
           </table>

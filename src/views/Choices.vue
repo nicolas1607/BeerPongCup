@@ -198,7 +198,7 @@ export default {
       }
     },
     // initialise la partie avec toutes les équipes
-    init: function () {
+    init() {
       const store = this.$store.getters;
       if (store.getStarted == false) {
         // team <array> & resFinal <array>

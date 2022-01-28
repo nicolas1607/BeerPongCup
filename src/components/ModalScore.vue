@@ -97,8 +97,24 @@
 <script>
 export default {
   name: "ModalScore",
-  beforeUnmount() {
-    this.setScore();
+  data() {
+    return {
+      listMatch: {},
+      teams: {},
+      play1: "",
+      play2: "",
+    };
+  },
+  mounted() {
+    this.play1 = localStorage.play1;
+    this.play2 = localStorage.play2;
+    // OBJECTS
+    if (localStorage.getItem("teams")) {
+      this.teams = JSON.parse(localStorage.getItem("teams"));
+    }
+    if (localStorage.getItem("listMatch")) {
+      this.listMatch = JSON.parse(localStorage.getItem("listMatch"));
+    }
   },
   methods: {
     addPts(id) {
@@ -130,10 +146,10 @@ export default {
     },
     setScore() {
       const team1 = document.querySelector("#team-name1").innerHTML;
-      const score1 = document.querySelector("#team-score-valeur1").value;
+      let score1 = document.querySelector("#team-score-valeur1").value;
       document.querySelector("#team-score-valeur1").value = "0";
       const team2 = document.querySelector("#team-name2").innerHTML;
-      const score2 = document.querySelector("#team-score-valeur2").value;
+      let score2 = document.querySelector("#team-score-valeur2").value;
       document.querySelector("#team-score-valeur2").value = "0";
       // Augmente le nbTours
       this.$parent.nbTours++;
@@ -158,6 +174,8 @@ export default {
         this.$parent.listMatch = JSON.parse(localStorage.getItem("listMatch"));
       }
       // Maj du tableau des scores
+      if (score1 == null || score1 == "") score1 = 0;
+      if (score2 == null || score2 == "") score2 = 0;
       const result = [];
       for (let team of this.$parent.teams) {
         if (team["value"][0] == team1) {
@@ -185,6 +203,7 @@ export default {
           });
         }
       }
+
       parsed = JSON.stringify(result);
       localStorage.setItem("teams", parsed);
       this.$store.commit("setTeam", result);

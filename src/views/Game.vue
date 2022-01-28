@@ -79,9 +79,10 @@
                   </span>
                 </td>
                 <td v-else>/</td>
-                <td id="score-sortable">
+                <td v-if="team.value[2]" id="score-sortable">
                   {{ team.value[2] }}
                 </td>
+                <td v-else id="score-sortable">0</td>
               </tr>
             </tbody>
           </table>
@@ -159,7 +160,6 @@ export default {
       nbTours: 0,
       totalMatch: 0,
       // STRING //
-      nbMatch: "",
       play1: "",
       play2: "",
       // OBJECTS PROXY //
@@ -210,10 +210,14 @@ export default {
     let sortableScript = document.createElement("link");
     sortableScript.setAttribute("href", "../assets/js/sorttable.js");
     document.head.appendChild(sortableScript);
+    console.log(this.teams);
+    // FIX ["test", array(), null] => ["test", array(), 0]
+    for (let team of this.teams) {
+      console.log(team.value[2]);
+    }
   },
   updated() {
-    this.nbMatch =
-      parseInt(localStorage.nbTours) + 1 + "/" + localStorage.totalMatch;
+    // Increment nbTours / totalMatch
     if (this.listMatch[0]) {
       for (let team of this.teams) {
         if (team["name"] == this.listMatch[0][0]) {
@@ -227,6 +231,7 @@ export default {
       }
     }
     this.sortedData();
+    console.log(this.teams);
   },
   methods: {
     hiddenMenu() {
