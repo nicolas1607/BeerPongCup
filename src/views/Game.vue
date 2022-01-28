@@ -1,6 +1,10 @@
 @<template>
   <div>
-    <Header title="Phase de Pool" :linkText="this.nbMatch" href="" />
+    <Header
+      title="Phase de Pool"
+      :nbTours="this.nbTours"
+      :totalMatch="this.totalMatch"
+    />
 
     <div id="menu">
       <div class="nav-title">

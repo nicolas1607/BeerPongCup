@@ -19,8 +19,8 @@
           />
           <h1>{{ title }}</h1>
         </div>
-        <div v-if="linkText" class="nav-list">
-          <router-link :to="href">{{ linkText }}</router-link>
+        <div v-if="nbTours" class="nav-list">
+          <p>{{ parseInt(this.nbTours) + 1 }}/{{ this.totalMatch }}</p>
         </div>
       </nav>
     </div>
@@ -32,8 +32,8 @@ export default {
   name: "Header",
   props: {
     title: String,
-    linkText: String,
-    href: String,
+    nbTours: Number,
+    totalMatch: Number,
   },
   methods: {
     visibleMenu() {
